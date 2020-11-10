@@ -7,7 +7,36 @@
 	一写多读场景下使用shared_mutex
 
 2. 条件锁(condition_variable)
+
+```C++
+//release lock and blocked then unblocked and reaquire lock
+cv.wait(lk, [] { return i == 1; });
+//blocked waiting for notify
+```
+
 3. 自旋锁(spinlock)
+
+在C++中用atomic_flag实现
+```C++
+class SpinLock
+{
+public:
+	void lock()
+	{
+		while (sync.test_and_set(memory_order_acquire))
+			;
+	}
+
+	void unlock()
+	{
+		sync.clear(memory_order_release);
+	}
+
+private:
+	atomic_flag sync;
+};
+```
+
 4. 无锁(lock-free)
 
 ## 不同场景下锁的效率
@@ -19,6 +48,33 @@
 
 ## 案例2
 1. 单例双重加锁
+
+```C++
+class Singleton
+{
+public:
+	Singleton *getInstance()
+	{
+		if (instance == nullptr)
+		{
+			//use unique_lock and scope_lock instead of lock_guard
+			unique_lock<mutex> lock(m_mutex);
+			if (instance == nullptr)
+				instance = new Singleton();
+		}
+		return instance;
+	}
+
+private:
+	Singleton() {}
+	~Singleton() {}
+
+	static Singleton *instance;
+	static mutex m_mutex;
+};
+
+Singleton *Singleton::instance = nullptr;
+```
 
 ## 原子操作
 1. X86架构汇编
