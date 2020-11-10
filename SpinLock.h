@@ -1,3 +1,6 @@
+#ifndef _SPINLOCK_H_
+#define _SPINLOCK_H_
+
 #include <atomic>
 using namespace std;
 
@@ -33,3 +36,5 @@ public:
 private:
 	atomic_flag sync;
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _ATOMIC_H_
+#define _ATOMIC_H_
+
 /*
 lock用于锁定前端串行总线FSB
 */
@@ -11,3 +14,5 @@ static int lxx_atomic_add(int *ptr, int increment)
 					 : "cc", "memory");
 	return *ptr;
 }
+
+#endif
