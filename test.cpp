@@ -18,14 +18,16 @@ using namespace std;
 加锁执行任务时间短,spinlock效率高
 加锁执行任务时间长,mutex效率高
 */
-#define THREAD_NUM 100
+#define THREAD_NUM 4
+#define ACCUMULATE 1000
 SpinLock sp;
 mutex m;
 static int sum = 0;
 
 void increase()
 {
-	++sum;
+	for (int i = 0; i < ACCUMULATE; ++i)
+		++sum;
 	// cout << "thread id:" << this_thread::get_id()
 	// 	 << " sum: " << sum << endl;
 	// this_thread::sleep_for(100ms);
