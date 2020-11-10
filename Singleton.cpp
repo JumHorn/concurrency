@@ -15,7 +15,8 @@ public:
 	{
 		if (instance == nullptr)
 		{
-			lock_guard<mutex> lock(m_mutex);
+			//use unique_lock and scope_lock instead of lock_guard
+			unique_lock<mutex> lock(m_mutex);
 			if (instance == nullptr)
 				instance = new Singleton();
 		}
