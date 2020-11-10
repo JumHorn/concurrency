@@ -26,9 +26,14 @@ static int sum = 0;
 void increase()
 {
 	++sum;
-	cout << "thread id:" << this_thread::get_id()
-		 << " sum: " << sum << endl;
+	// cout << "thread id:" << this_thread::get_id()
+	// 	 << " sum: " << sum << endl;
 	// this_thread::sleep_for(100ms);
+}
+
+void increase_using_asm()
+{
+	lxx_atomic_add(&sum, 1);
 }
 
 void increase_using_mutex()
@@ -45,6 +50,7 @@ void increase_using_spinlock()
 
 int main()
 {
+	//for mutex
 	auto start = chrono::steady_clock::now();
 	vector<thread> thread_using_mutex;
 	for (int i = 0; i < THREAD_NUM; ++i)
@@ -56,6 +62,7 @@ int main()
 		 << chrono::duration_cast<chrono::microseconds>(end - start).count()
 		 << "ms sum:" << sum << endl;
 
+	//for spinlock
 	sum = 0;
 	start = chrono::steady_clock::now();
 	vector<thread> thread_using_spinlock;
@@ -67,5 +74,18 @@ int main()
 	cout << "using spinlock time consuming: "
 		 << chrono::duration_cast<chrono::microseconds>(end - start).count()
 		 << "ms sum:" << sum << endl;
+
+	// for asm
+	// sum = 0;
+	// start = chrono::steady_clock::now();
+	// vector<thread> thread_using_asm;
+	// for (int i = 0; i < THREAD_NUM; ++i)
+	// 	thread_using_asm.push_back(move(thread(increase_using_asm)));
+	// for (auto &t : thread_using_asm)
+	// 	t.join();
+	// end = chrono::steady_clock::now();
+	// cout << "using asm time consuming: "
+	// 	 << chrono::duration_cast<chrono::microseconds>(end - start).count()
+	// 	 << "ms sum:" << sum << endl;
 	return 0;
 }
