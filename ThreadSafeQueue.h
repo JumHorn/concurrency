@@ -22,7 +22,7 @@ public:
 	void push(T new_value)
 	{
 		unique_lock<mutex> lock(mut);
-		data_queue.push(std::move(data));
+		data_queue.push(std::move(new_value));
 		data_cond.notify_one();
 	}
 
