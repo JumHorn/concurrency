@@ -4,6 +4,7 @@
 #include <memory>
 #include <mutex>
 #include <queue>
+using std::make_shared;
 using std::queue;
 using std::shared_ptr;
 using std::unique_lock;
@@ -11,10 +12,10 @@ using std::unique_lock;
 #include "SpinLock.h"
 
 template <typename T>
-class threadsafe_queue
+class lockfree_queue
 {
 public:
-	threadsafe_queue()
+	lockfree_queue()
 	{
 	}
 
@@ -26,14 +27,23 @@ public:
 
 	void wait_and_pop(T &value)
 	{
-		unique_lock<SpinLock> lock(splock);
-		value = std::move(data_queue.front());
-		data_queue.pop();
+		while (true)
+		{
+			unique_lock<SpinLock> lock(splock);
+			if (!data_queue.empty())
+			{
+				value = std::move(data_queue.front());
+				data_queue.pop();
+				break;
+			}
+		}
 	}
 
 	shared_ptr<T> wait_and_pop()
 	{
 		unique_lock<SpinLock> lock(splock);
+		if (data_queue.empty())
+			return shared_ptr<T>();
 		shared_ptr<T> res(make_shared<T>(std::move(data_queue.front())));
 		data_queue.pop();
 		return res;

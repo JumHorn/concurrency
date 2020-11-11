@@ -62,6 +62,7 @@ static int lxx_atomic_add(int *ptr, int increment)
 ## 案例1
 1. 指令重排 (Instruction Reordering)
 2. 内存屏障（Memory Barrier)
+3. kfifo
 
 ## 案例2
 1. 单例双重加锁

@@ -6,6 +6,7 @@
 #include <mutex>
 #include <queue>
 using std::condition_variable;
+using std::make_shared;
 using std::mutex;
 using std::queue;
 using std::shared_ptr;
