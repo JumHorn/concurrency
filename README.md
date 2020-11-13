@@ -93,3 +93,6 @@ private:
 
 Singleton *Singleton::instance = nullptr;
 ```
+
+## C++线程妙用
+1. C++ std::async
