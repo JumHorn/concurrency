@@ -32,3 +32,4 @@ private:
 };
 
 Singleton *Singleton::instance = nullptr;
+mutex Singleton::m_mutex;
